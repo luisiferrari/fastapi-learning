@@ -1,0 +1,4 @@
+For any change on DB, if changing columns, tables or whatever, I'm using alembic (pip install alembic) -> https://alembic.sqlalchemy.org/en/latest/
+alembic comands:
+    after making a change to the model, create a version (something as a commit) -> alembic revision --autogenerate -m "<YOUR MESSAGE HERE>"
+    once you checked the new version python file (the one with the upgrade and downgrade functions) -> alembic upgrade head (or downgrade if you want to rollback)
