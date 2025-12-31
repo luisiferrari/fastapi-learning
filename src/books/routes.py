@@ -4,7 +4,6 @@ from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
 
-
 from src.books.service import BookService
 from src.books.schemas import Book, BookUpdateModel, BookCreateModel
 from src.db.main import get_session # The get_session contains the logic to create and manage database sessions.

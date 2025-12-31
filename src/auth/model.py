@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field, Column, DateTime
 import sqlalchemy.dialects.postgresql as pg
 import uuid
 from datetime import datetime, timezone
+from typing import Optional
 
 
 
@@ -18,9 +19,9 @@ class User(SQLModel, table=True):
     )
     username: str
     email: str
-    first_name: str
-    last_name: str
-    is_verified: bool = Field(default=False)
+    first_name: Optional[str] = Field(default=None, nullable=True)
+    last_name: Optional[str] = Field(default=None, nullable=True)
+    is_verified: Optional[bool] = Field(default=None, nullable=True)
     create_at: datetime = Field(
             sa_column=Column(
                 DateTime(timezone=True),
