@@ -23,12 +23,13 @@ class UserService:
         In this method, we receive the Schema UserCreateModel containing the data necessary to create a new user. We convert this schema into a dictionary using the model_dump() method. Then, we create a new instance of the User model by unpacking the dictionary using the ** syntax. This allows us to pass the key-value pairs of the dictionary as keyword arguments to the User constructor."""
         
         user_data_dict = user_data.model_dump()
-        
+        password = user_data_dict['password']
+        user_data_dict.pop('password')
         new_user = User(
             **user_data_dict
         )
         
-        new_user.password_hash = generate_hashed_password(user_data.password)
+        new_user.password_hash = generate_hashed_password(password)
         
         session.add(new_user)
         

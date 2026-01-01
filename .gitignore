@@ -3,3 +3,4 @@ env/
 __pychace__
 ../.gitignore
 ../main_teste.py    
+__pycache__
