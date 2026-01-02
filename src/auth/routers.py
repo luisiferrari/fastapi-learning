@@ -105,27 +105,17 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
     
     if expire_refresh_toke < datetime.now():
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Refresh token has expired.")
-    
-    user_id = token_details.get("user").get("uid")
-    user_username = token_details.get("user").get("username")
-    user_email = token_details.get("user").get("email")
+
+    user_data = token_details.get("user")
     
     access_token = create_access_token(
-        user_data={
-            "uid": str(user_id),
-            "username": user_username,
-            "email": user_email,
-        },
+        user_data=user_data,
         refresh=False,
         expire=timedelta(seconds=600) # 10 minutes
     )
             
     refresh_token = create_access_token(
-        user_data={
-            "uid": str(user_id),
-            "username": user_username,
-            "email": user_email,
-        },
+        user_data=user_data,
         refresh=True,
         expire=timedelta(seconds=REFRESH_TOKEN_EXPIRY_SECONDS)
     )
@@ -135,11 +125,7 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
                     "message": "Login successful.",
                     "access_token": access_token,
                     "refresh_token": refresh_token,
-                    "user": {
-                        "uid": str(user_id),
-                        "username": user_username,
-                        "email": user_email
-                    }
+                    "user": user_data
                 }
             )
 
