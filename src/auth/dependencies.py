@@ -1,6 +1,5 @@
 from fastapi import Request, status
 from fastapi.security import HTTPBearer
-from fastapi.security.http import HTTPAuthorizationCredentials
 from fastapi.exceptions import HTTPException
 
 from .utils import decode_token
@@ -11,8 +10,6 @@ class AccessTokenBearer(HTTPBearer):
         
     async def __call__(self, request: Request):
         creds = await super().__call__(request)
-    
-        print(f'CREDENDCIAIS: {creds.credentials}')
         
         token = creds.credentials
         
