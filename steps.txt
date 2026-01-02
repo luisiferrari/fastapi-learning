@@ -3,7 +3,7 @@ alembic comands:
     after making a change to the model, create a version (something as a commit) -> alembic revision --autogenerate -m "<YOUR MESSAGE HERE>"
     once you checked the new version python file (the one with the upgrade and downgrade functions) -> alembic upgrade head (or downgrade if you want to rollback)
 
-    stoped in :https://youtu.be/TO4aQ3ghFOc?t=18909
+    stoped in :https://youtu.be/TO4aQ3ghFOc?t=21005
 
 #To generate a secret for JWT:
     import secrets      
