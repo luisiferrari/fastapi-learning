@@ -1,6 +1,6 @@
 .env
 env/
-__pychace__
+**/__pychace__
 ../.gitignore
 ../main_teste.py    
 __pycache__
