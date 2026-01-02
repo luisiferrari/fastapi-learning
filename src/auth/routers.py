@@ -9,6 +9,7 @@ from .service import UserService
 from .utils import create_access_token, decode_token, verify_password
 from src.db.main import get_session
 
+
 user_service = UserService()
 
 auth_router = APIRouter()
@@ -36,6 +37,7 @@ async def login_user(user_loggin_data: UserLoginModel, session: AsyncSession = D
     password = user_loggin_data.password
     
     user = await user_service.get_user_by_email(email=email, session=session)
+    
     if user is not None:
         password_valid = verify_password(password, user.password_hash)
         
@@ -46,8 +48,8 @@ async def login_user(user_loggin_data: UserLoginModel, session: AsyncSession = D
                     "username": user.username,
                     "email": user.email,
                 },
-                refresh=True,
-                expire=timedelta(minutes=15)
+                refresh=False,
+                expire=timedelta(seconds=600) # 10 minutes
             )
             
             refresh_token = create_access_token(

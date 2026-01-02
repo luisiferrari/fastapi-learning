@@ -1,9 +1,11 @@
 from sys import version
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
+
 from src.books.routes import book_router
 from src.auth.routers import auth_router
-from contextlib import asynccontextmanager
 from src.db.main import init_db
+
 
 @asynccontextmanager
 async def life_span(app: FastAPI):
