@@ -8,7 +8,7 @@ from sqlmodel import true
 
 from .schemas import UserCreateModel, UserModel,UserLoginModel
 from .service import UserService
-from .utils import create_access_token, decode_token, verify_password
+from .utils import create_access_token, verify_password
 from src.db.main import get_session
 from .dependencies import RefreshTokenBearer
 
