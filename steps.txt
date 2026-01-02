@@ -4,3 +4,10 @@ alembic comands:
     once you checked the new version python file (the one with the upgrade and downgrade functions) -> alembic upgrade head (or downgrade if you want to rollback)
 
     stoped in :https://youtu.be/TO4aQ3ghFOc?t=16977
+
+
+#To generate a secret for JWT:
+    import secrets      
+    secrets.token_hex(16)
+
+docker run -d --name memos  -p 5230:5230 -v ~/.memos:/var/opt/memos neosmemo/memos:stable
