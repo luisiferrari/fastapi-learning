@@ -1,6 +1,6 @@
 from .model import User
 from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlmodel import select
+from sqlmodel import select, desc
 
 from src.auth.schemas import UserCreateModel
 from src.auth.utils import generate_hashed_password
@@ -8,6 +8,12 @@ from .model import User
 
 
 class UserService:
+    
+    async def get_all_users(self, session: AsyncSession): # -> I personally addede this method so I dont have to keep checking the database manually
+        statement = select(User).order_by(desc(User.create_at))
+        result = await session.execute(statement)
+        return result.scalars().all()
+    
     async def get_user_by_email(self, email: str, session: AsyncSession):
         statement = select(User).where(User.email == email)
         result = await session.scalars(statement)
