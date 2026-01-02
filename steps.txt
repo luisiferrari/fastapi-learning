@@ -16,3 +16,8 @@ Então:
     * Tenho um arquivo utils.py onde crio a lógica de criação do token, verificação do hash da senha, geração do hash da senha e decodificação do token jwt.
     * tenho  um file dependencies que é onde eu herdo a classe do fastapi que me permite pegar os headers e o payload, para pegar o toke, e então checa-lo
     * no serviço de /login, eu checo usando a verificação de hash, se a senha está certa, e se sim, crio o access e refresh token, retornando no payload para o client.
+
+{
+  "email": "auth@mail.com",
+  "password": "123456"
+}

@@ -4,10 +4,13 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import timedelta, datetime
 
+from sqlmodel import true
+
 from .schemas import UserCreateModel, UserModel,UserLoginModel
 from .service import UserService
 from .utils import create_access_token, decode_token, verify_password
 from src.db.main import get_session
+from .dependencies import RefreshTokenBearer
 
 
 user_service = UserService()
@@ -75,3 +78,69 @@ async def login_user(user_loggin_data: UserLoginModel, session: AsyncSession = D
             )
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid email or password.")
     
+@auth_router.get("/refresh_token")
+async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer())):
+    
+    # O RefreshTokenBearer me retorna um dict no formato abaixo:
+    # {
+    #     "user": {
+    #         "uid": "40c07a54-74ba-461b-aa58-f203bdc9e0d0",
+    #         "username": "teste1",
+    #         "email": "auth@mail.com"
+    #     },
+    #     "exp": 1767563103,
+    #     "jti": "7b1f8c05-42f1-471c-9c9b-f7a23d455699",
+    #     "refresh": true
+    # }
+    
+    # Isso porque essa classe herda do TokenBearer e no seu método __call__ ela decodifica o token
+    # e retorna o payload (que é esse dict acima).
+    # Luis, 02/01/2026.
+    
+    if token_details is None:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid refresh token.")
+    
+    expire_refresh_toke = datetime.fromtimestamp(token_details.get("exp"))
+    print(expire_refresh_toke)
+    
+    if expire_refresh_toke < datetime.now():
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Refresh token has expired.")
+    
+    user_id = token_details.get("user").get("uid")
+    user_username = token_details.get("user").get("username")
+    user_email = token_details.get("user").get("email")
+    
+    access_token = create_access_token(
+        user_data={
+            "uid": str(user_id),
+            "username": user_username,
+            "email": user_email,
+        },
+        refresh=False,
+        expire=timedelta(seconds=600) # 10 minutes
+    )
+            
+    refresh_token = create_access_token(
+        user_data={
+            "uid": str(user_id),
+            "username": user_username,
+            "email": user_email,
+        },
+        refresh=True,
+        expire=timedelta(seconds=REFRESH_TOKEN_EXPIRY_SECONDS)
+    )
+
+    return JSONResponse(
+                content={
+                    "message": "Login successful.",
+                    "access_token": access_token,
+                    "refresh_token": refresh_token,
+                    "user": {
+                        "uid": str(user_id),
+                        "username": user_username,
+                        "email": user_email
+                    }
+                }
+            )
+
+
