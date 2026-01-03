@@ -4,3 +4,4 @@ env/
 ../.gitignore
 ../main_teste.py    
 __pycache__
+.vscode
