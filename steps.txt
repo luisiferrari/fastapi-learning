@@ -21,3 +21,7 @@ Então:
   "email": "auth@mail.com",
   "password": "123456"
 }
+
+Instalando redis:
+
+docker run -d --name redis-auth -p 6379:6379 redis:7
