@@ -25,3 +25,29 @@ Então:
 Instalando redis:
 
 docker run -d --name redis-auth -p 6379:6379 redis:7
+
+## Ponto importante de entendimento. 
+
+Quando eu tenho uma função como a de baixo: 
+
+    async def list_books(
+        session: AsyncSession = Depends(get_session))
+
+O que acontece é:
+
+1. Chama get_session()
+2. Executa até o yield
+3. Pega o session
+4. Injeta em session: AsyncSession
+
+Isso porque a função get_session, eu faço yield, para que a session morra depois que o call é retornado.
+
+async def get_session():
+    Session = sessionmaker(
+        bind=engine,
+        class_=AsyncSession,
+        expire_on_commit=False
+    )
+    
+    async with Session() as session:
+        yield session
