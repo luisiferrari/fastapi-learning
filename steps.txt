@@ -1,3 +1,8 @@
+RUN DEV MODE: 
+    fastapi dev .\__init__.py
+
+
+
 For any change on DB, if changing columns, tables or whatever, I'm using alembic (pip install alembic) -> https://alembic.sqlalchemy.org/en/latest/
 alembic comands:
     after making a change to the model, create a version (something as a commit) -> alembic revision --autogenerate -m "<YOUR MESSAGE HERE>"
@@ -54,4 +59,9 @@ async def get_session():
 
 ### Adding permissions:
     Added permission RoleChecker e injetado como dependencia. Observe o arquivo routes de books como eles foram injetados, uma maneira diferente de como tenho feito até então.
-    
+
+## Dockerização:
+build da imagem:
+    docker build -t minha-app-books .
+subir um container:
+    docker run -d --name app-container  -p 8000:8000  --add-host=host.docker.internal:host-gateway  --env-file ./src/.env  minha-app-books
