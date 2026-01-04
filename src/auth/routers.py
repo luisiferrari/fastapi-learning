@@ -3,14 +3,13 @@ from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import timedelta, datetime
-
 from sqlmodel import true
 
 from .schemas import UserCreateModel, UserModel,UserLoginModel
 from .service import UserService
 from .utils import create_access_token, verify_password
 from src.db.main import get_session
-from .dependencies import RefreshTokenBearer, AccessTokenBearer
+from .dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user
 from src.db.redis import add_jti_to_blocklist
 
 
@@ -142,4 +141,9 @@ async def revoke_token(token_detais: dict=Depends(AccessTokenBearer())):
         },
         status_code=status.HTTP_200_OK
     )
+    
+@auth_router.get('/me')
+async def current_user(user: dict=Depends(get_current_user)):
+    return user
+    
     

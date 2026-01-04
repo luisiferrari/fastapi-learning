@@ -19,8 +19,8 @@ version = "v1"
 app = FastAPI(
     title="Book Management API",
     description="An API to manage a collection of books.",
-    version=version,
-    lifespan=life_span
+    version=version
+    # lifespan=life_span # -> Removed because I'm using alembic for database migrations. I was only using .create_all() from Lifespan, so now its not necessary anymore
 )
 
 app.include_router(book_router, prefix=f"/api/{version}/books", tags=["Books"])
