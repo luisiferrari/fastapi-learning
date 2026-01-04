@@ -23,9 +23,16 @@ class BookService:
         
         result = await session.execute(statement=statement)
         
-        return result.scalars().first()
+        return result.scalars().all()
     
-    async def create_book(self, book_data: BookCreateModel, session: AsyncSession):
+    async def get_user_books(self, user_uid: str, session: AsyncSession):
+        statement = select(Book).where(Book.user_uid == user_uid)
+        
+        result = await session.execute(statement=statement)
+        
+        return result.scalars().all()
+    
+    async def create_book(self, book_data: BookCreateModel, user_uid: str, session: AsyncSession):
         book_data_dict = book_data.model_dump()
         
         new_book = Book(
@@ -34,6 +41,7 @@ class BookService:
         # '''
         # The ** syntax is used to unpack the dictionary and pass its key-value pairs as keyword arguments to the Book constructor. The named arguments correspond to the fields defined in the Book model.
         # '''
+        new_book.user_uid = user_uid
         
         session.add(new_book)
         

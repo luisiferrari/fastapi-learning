@@ -23,7 +23,7 @@ Então:
     * no serviço de /login, eu checo usando a verificação de hash, se a senha está certa, e se sim, crio o access e refresh token, retornando no payload para o client.
 
 {
-  "email": "auth@mail.com",
+  "email": "new@gmail.com",
   "password": "123456"
 }
 
