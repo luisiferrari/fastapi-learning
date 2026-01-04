@@ -9,11 +9,12 @@ from .schemas import UserCreateModel, UserModel,UserLoginModel
 from .service import UserService
 from .utils import create_access_token, verify_password
 from src.db.main import get_session
-from .dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user
+from .dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user, RoleChecker
 from src.db.redis import add_jti_to_blocklist
 
 
 user_service = UserService()
+role_checker = RoleChecker(['admin'])
 
 auth_router = APIRouter()
 
@@ -50,6 +51,7 @@ async def login_user(user_loggin_data: UserLoginModel, session: AsyncSession = D
                     "uid": str(user.uid),
                     "username": user.username,
                     "email": user.email,
+                    "role": user.role
                 },
                 refresh=False,
                 expire=timedelta(seconds=600) # 10 minutes
@@ -60,6 +62,7 @@ async def login_user(user_loggin_data: UserLoginModel, session: AsyncSession = D
                     "uid": str(user.uid),
                     "username": user.username,
                     "email": user.email,
+                    "role": user.role
                 },
                 refresh=True,
                 expire=timedelta(seconds=REFRESH_TOKEN_EXPIRY_SECONDS)
@@ -143,7 +146,7 @@ async def revoke_token(token_detais: dict=Depends(AccessTokenBearer())):
     )
     
 @auth_router.get('/me')
-async def current_user(user: dict=Depends(get_current_user)):
+async def current_user(user: dict=Depends(get_current_user), _: bool = Depends(role_checker)):
     return user
     
     

@@ -2,11 +2,13 @@ from fastapi import Request, status, Depends
 from fastapi.security import HTTPBearer
 from fastapi.exceptions import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing import List
 
-from src.db.main import get_session
 from .service import UserService
 from .utils import decode_token
+from .model import User
 from src.db.redis import token_in_blocklist
+from src.db.main import get_session
 
 user_service = UserService()
 
@@ -68,3 +70,15 @@ async def get_current_user(token_details: dict=Depends(AccessTokenBearer()), ses
     print(user)
     return user
     
+class RoleChecker:
+    def __init__(self, allowed_roles: List[str]) -> None:
+        self.allowed_roles = allowed_roles
+        
+    def __call__(self, current_user: User = Depends(get_current_user)):
+        
+        if current_user.role in self.allowed_roles:
+            return True
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not aloowed to perform this action."
+        )
